@@ -765,7 +765,9 @@ void rd_kafka_offset_reset (rd_kafka_toppar_t *rktp, int64_t err_offset,
                 return;
         }
 
-	if (err_offset == RD_KAFKA_OFFSET_INVALID || err)
+        if (err == RD_KAFKA_RESP_ERR_OFFSET_OUT_OF_RANGE)
+            offset = RD_KAFKA_OFFSET_STORED;
+	else if (err_offset == RD_KAFKA_OFFSET_INVALID || err)
 		offset = rktp->rktp_rkt->rkt_conf.auto_offset_reset;
 	else
 		offset = err_offset;
