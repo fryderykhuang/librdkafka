@@ -5071,7 +5071,7 @@ void test_wait_metadata_update (rd_kafka_t *rk,
                                 int tmout) {
         int64_t abs_timeout;
         test_timing_t t_md;
-        rd_kafka_t *our_rk;
+        rd_kafka_t *our_rk = NULL;
 
         if (!rk)
                 rk = our_rk = test_create_handle(RD_KAFKA_PRODUCER, NULL);
