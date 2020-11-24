@@ -1712,7 +1712,7 @@ static void n_wildcard () {
       test_create_topic(NULL, topic_name_1.c_str(), 2, 1);
       test_create_topic(NULL, topic_name_2.c_str(), 2, 1);
       test_wait_topic_exists(c1->c_ptr(), topic_name_1.c_str(), 10*1000);
-      test_wait_topic_exists(c1->c_ptr(), topic_name_2.c_str(), 10*1000);
+      test_wait_topic_exists(c2->c_ptr(), topic_name_2.c_str(), 10*1000);
       created_topics = true;
     }
 
@@ -1796,10 +1796,10 @@ static void n_wildcard () {
 
   TEST_ASSERT(rebalance_cb1.nonempty_revoke_call_cnt == 2,
               "Expecting C_1's revoke_call_cnt to be 2 not %d",
-              rebalance_cb1.assign_call_cnt);
+              rebalance_cb1.nonempty_revoke_call_cnt);
   TEST_ASSERT(rebalance_cb2.nonempty_revoke_call_cnt == 2,
               "Expecting C_2's revoke_call_cnt to be 2 not %d",
-              rebalance_cb2.assign_call_cnt);
+              rebalance_cb2.nonempty_revoke_call_cnt);
 
   TEST_ASSERT(rebalance_cb1.lost_call_cnt == 1,
               "Expecting C_1's lost_call_cnt to be 1, not %d",
