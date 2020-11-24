@@ -175,6 +175,9 @@ static void rd_kafka_mock_cgrp_sync_done (rd_kafka_mock_cgrp_t *mcgrp,
 
                 if ((resp = member->resp)) {
                         member->resp = NULL;
+                        rd_assert(resp->rkbuf_reqhdr.ApiKey ==
+                                  RD_KAFKAP_SyncGroup);
+
                         rd_kafka_buf_write_i16(resp, err); /* ErrorCode */
                         /* MemberState */
                         rd_kafka_buf_write_kbytes(resp,
@@ -329,6 +332,8 @@ static void rd_kafka_mock_cgrp_elect_leader (rd_kafka_mock_cgrp_t *mcgrp) {
                 resp = member->resp;
                 member->resp = NULL;
 
+                rd_assert(resp->rkbuf_reqhdr.ApiKey == RD_KAFKAP_JoinGroup);
+
                 rd_kafka_buf_write_i16(resp, 0); /* ErrorCode */
                 rd_kafka_buf_write_i32(resp, mcgrp->generation_id);
                 rd_kafka_buf_write_str(resp, mcgrp->protocol_name, -1);
@@ -381,7 +386,8 @@ static void rd_kafka_mock_cgrp_rebalance (rd_kafka_mock_cgrp_t *mcgrp,
                                           const char *reason) {
         int timeout_ms;
 
-        if (mcgrp->state == RD_KAFKA_MOCK_CGRP_STATE_JOINING)
+        if (mcgrp->state == RD_KAFKA_MOCK_CGRP_STATE_JOINING ||
+            mcgrp->state == RD_KAFKA_MOCK_CGRP_STATE_SYNCING)
                 return; /* Do nothing, group is already rebalancing. */
         else if (mcgrp->state == RD_KAFKA_MOCK_CGRP_STATE_EMPTY)
                 timeout_ms = 1000; /* First join, low timeout */
